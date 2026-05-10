@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCOUT — AI Sales Intelligence</title>
+<title>SOLSCOUT — Solana Yield Intelligence</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -280,17 +280,17 @@ nav{display:flex;gap:4px;margin-left:20px}
 
 <header>
   <div class="logo">
-    <div class="logo-mark">SC</div>
+    <div class="logo-mark">SS</div>
     <div>
-      <span class="logo-text">SCOUT</span>
-      <span class="logo-tag"> AI Sales Intelligence</span>
+      <span class="logo-text">SOLSCOUT</span>
+      <span class="logo-tag"> Solana Yield Intelligence</span>
     </div>
   </div>
 
   <nav>
     <button class="tab active" onclick="switchPage('scout')" id="tab-scout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Scout
+      Hunt
       <span class="notif-dot" id="notif-scout"></span>
     </button>
     <button class="tab" onclick="switchPage('briefing')" id="tab-briefing">
@@ -310,16 +310,22 @@ nav{display:flex;gap:4px;margin-left:20px}
     </button>
   </nav>
 
-  <div class="header-right">
-    <div class="cost-badge">
-      <span class="cost-label">x402 Cost</span>
-      <span class="cost-value" id="costCounter">$0.000000</span>
+    <div class="header-right">
+      <div style="display:flex;align-items:center;gap:10px;margin-right:8px">
+        <img src="https://cryptologos.cc/logos/solana-sol-logo.svg" height="18" title="Solana" style="opacity:0.7">
+        <span style="font-size:10px;color:var(--text3);font-weight:700;background:rgba(108,99,255,0.08);padding:2px 8px;border-radius:6px">ElevenLabs</span>
+        <span style="font-size:10px;color:var(--text3);font-weight:700;background:rgba(108,99,255,0.08);padding:2px 8px;border-radius:6px">Virtuals</span>
+        <span style="font-size:10px;color:var(--text3);font-weight:700;background:rgba(108,99,255,0.08);padding:2px 8px;border-radius:6px">LI.FI</span>
+      </div>
+      <div class="cost-badge">
+        <span class="cost-label">x402 Cost</span>
+        <span class="cost-value" id="costCounter">$0.000000</span>
+      </div>
+      <div class="status-pill" id="statusPill">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Ready</span>
+      </div>
     </div>
-    <div class="status-pill" id="statusPill">
-      <div class="dot" id="statusDot"></div>
-      <span id="statusText">Ready</span>
-    </div>
-  </div>
 </header>
 
 <div class="app">
@@ -331,19 +337,19 @@ nav{display:flex;gap:4px;margin-left:20px}
       <div class="card">
         <div class="card-label">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          Prospect Research
+          Yield Hunt Goal
         </div>
         <textarea class="prospect-input" id="goalInput"
-          placeholder="Enter prospect name + company URL&#10;e.g. Sarah Chen, VP Sales at Notion (notion.so)"></textarea>
+          placeholder="Describe your yield goal&#10;e.g. Find me the safest 10% yield on Solana"></textarea>
         <div class="chips">
-          <span class="chip" onclick="setExample(0)">Sarah Chen · Notion</span>
-          <span class="chip" onclick="setExample(1)">Marcus Rivera · Linear</span>
-          <span class="chip" onclick="setExample(2)">Priya Patel · Figma</span>
+          <span class="chip" onclick="setExample(0)">Safest 10% yield on Solana</span>
+          <span class="chip" onclick="setExample(1)">Best USDC stablecoin APY</span>
+          <span class="chip" onclick="setExample(2)">Highest SOL staking yield</span>
         </div>
         <div class="btn-row">
           <button class="btn btn-primary" id="runBtn" onclick="runGoal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Launch Scout
+            Launch Hunt
           </button>
           <button class="btn btn-voice" id="voiceBtn" onclick="toggleVoice()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
@@ -360,24 +366,24 @@ nav{display:flex;gap:4px;margin-left:20px}
         </div>
       </div>
 
-      <!-- Autonomous mode panel -->
+      <!-- Yield monitor panel -->
       <div class="card" id="autoPanel">
         <div class="card-label">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><circle cx="18" cy="6" r="3" fill="rgba(108,99,255,0.2)" stroke="#6c63ff"/></svg>
-          Autonomous Mode
+          Yield Monitor
           <span id="autoBadge" style="margin-left:auto;padding:2px 10px;border-radius:8px;font-size:10px;font-weight:700;background:rgba(108,99,255,0.1);color:var(--accent)">OFF</span>
         </div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.6">
-          SCOUT watches <code style="background:rgba(108,99,255,0.08);padding:1px 6px;border-radius:4px;font-size:11px">prospects.csv</code> and automatically researches every new prospect — no human input required.
+          SOLSCOUT watches Solana pools and alerts you when APY changes by more than <code style="background:rgba(108,99,255,0.08);padding:1px 6px;border-radius:4px;font-size:11px">2%</code> — no human input required.
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px">
           <button class="btn btn-primary" id="autoStartBtn" onclick="toggleAuto()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-            Start Autonomous
+            Start Monitor
           </button>
         </div>
         <div style="display:flex;gap:8px">
-          <input id="queueInput" type="text" placeholder="Add prospect to queue..." style="flex:1;background:rgba(255,255,255,0.6);border:1.5px solid rgba(108,99,255,0.18);border-radius:10px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;color:var(--text)">
+          <input id="queueInput" type="text" placeholder="Add yield goal to queue..." style="flex:1;background:rgba(255,255,255,0.6);border:1.5px solid rgba(108,99,255,0.18);border-radius:10px;padding:8px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;color:var(--text)">
           <button class="btn btn-ghost" onclick="addToQueue()" style="padding:8px 14px">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add
@@ -389,7 +395,7 @@ nav{display:flex;gap:4px;margin-left:20px}
         <div class="tx-card">
           <div class="card-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            Recommended Action
+            Recommended Solana Transaction
           </div>
           <div id="txContent"></div>
         </div>
@@ -460,8 +466,8 @@ nav{display:flex;gap:4px;margin-left:20px}
 
       <div id="outreachSection" style="display:none" class="outreach-card">
         <div class="card-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Outreach Draft
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Yield Strategy
         </div>
         <div class="outreach-subject" id="outreachSubject"></div>
         <div class="outreach-body" id="outreachBody"></div>
@@ -476,18 +482,18 @@ nav{display:flex;gap:4px;margin-left:20px}
           <div class="score-total" id="scoreTotalNum">0</div>
           <div style="font-size:13px;color:var(--text3)">/100</div>
         </div>
-        <div class="score-row"><span class="score-label">Company Growth</span><div class="score-bar-wrap"><div class="score-bar" id="bar-growth"></div></div><span class="score-val" id="val-growth">0</span></div>
-        <div class="score-row"><span class="score-label">Budget Signal</span><div class="score-bar-wrap"><div class="score-bar" id="bar-budget"></div></div><span class="score-val" id="val-budget">0</span></div>
-        <div class="score-row"><span class="score-label">Pain Match</span><div class="score-bar-wrap"><div class="score-bar" id="bar-pain"></div></div><span class="score-val" id="val-pain">0</span></div>
-        <div class="score-row"><span class="score-label">Timing</span><div class="score-bar-wrap"><div class="score-bar" id="bar-timing"></div></div><span class="score-val" id="val-timing">0</span></div>
-        <div class="score-row"><span class="score-label">Tech Fit</span><div class="score-bar-wrap"><div class="score-bar" id="bar-tech"></div></div><span class="score-val" id="val-tech">0</span></div>
+        <div class="score-row"><span class="score-label">APY Score</span><div class="score-bar-wrap"><div class="score-bar" id="bar-growth"></div></div><span class="score-val" id="val-growth">0</span></div>
+        <div class="score-row"><span class="score-label">Risk Score</span><div class="score-bar-wrap"><div class="score-bar" id="bar-budget"></div></div><span class="score-val" id="val-budget">0</span></div>
+        <div class="score-row"><span class="score-label">Liquidity</span><div class="score-bar-wrap"><div class="score-bar" id="bar-pain"></div></div><span class="score-val" id="val-pain">0</span></div>
+        <div class="score-row"><span class="score-label">Protocol Safety</span><div class="score-bar-wrap"><div class="score-bar" id="bar-timing"></div></div><span class="score-val" id="val-timing">0</span></div>
+        <div class="score-row"><span class="score-label">IL Risk</span><div class="score-bar-wrap"><div class="score-bar" id="bar-tech"></div></div><span class="score-val" id="val-tech">0</span></div>
         <div class="score-summary" id="scoreSummary"></div>
       </div>
 
       <div id="callSection" style="display:none" class="call-card">
         <div class="card-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Cold Call Script — 60 seconds
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          Risk Summary — Virtuals Agent Audit
         </div>
         <div class="call-script-text" id="callScriptText"></div>
         <div class="audio-player" id="callAudioUI" style="display:none">
@@ -524,10 +530,10 @@ nav{display:flex;gap:4px;margin-left:20px}
   <div class="page" id="page-trust">
     <div class="section-title" style="width:100%">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      ERC-8004 Agent Identities — Taiko L2
+      Solana Agent PDAs — Devnet
     </div>
     <div class="page-grid" id="identityGrid">
-      <div class="empty-state">No identities yet — run Scout to register agents</div>
+      <div class="empty-state">No PDAs yet — run SOLSCOUT to register agents on Solana devnet</div>
     </div>
     <div class="section-title" style="width:100%;margin-top:8px">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
@@ -551,7 +557,7 @@ nav{display:flex;gap:4px;margin-left:20px}
       <div>
         <div class="section-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          x402 Payment Receipts — Base Sepolia
+          x402 Payment Receipts — Solana
         </div>
         <div id="paymentGrid"><div class="empty-state">No payments yet</div></div>
       </div>
@@ -562,9 +568,9 @@ nav{display:flex;gap:4px;margin-left:20px}
 
 <script>
 const EXAMPLES = [
-  'Sarah Chen, VP Sales at Notion (notion.so)',
-  'Marcus Rivera, CTO at Linear (linear.app)',
-  'Priya Patel, Head of Growth at Figma (figma.com)',
+  'Find me the safest 10% yield on Solana',
+  'Best USDC stablecoin APY on Solana right now',
+  'Highest SOL staking yield with low risk',
 ];
 const agents = {};
 let currentPage = 'scout';
@@ -751,9 +757,9 @@ function runGoal() {
 
 function runDemo() {
   clearAll();
-  document.getElementById('goalInput').value = 'Marcus Rivera, CTO at Linear (linear.app)';
+  document.getElementById('goalInput').value = 'Find me the safest 10% yield on Solana';
   setRunning(true);
-  addLog('Demo mode: pre-cached research run', 'status');
+  addLog('Demo mode: Solana yield hunt', 'status');
   fetch('/demo', {method:'POST'});
 }
 
@@ -883,17 +889,22 @@ function showTransaction(bestYield, tx) {
   const steps = (tx.steps||[]).map(s => `
     <div class="tx-step">
       <span class="tx-step-num">Step ${s.step}</span>${s.description}
-      <div style="color:var(--text3);font-size:10px;margin-top:3px;font-family:monospace">${s.to}</div>
+      <div style="color:var(--text3);font-size:10px;margin-top:3px;font-family:monospace">${s.program||''} · ${(s.account||'').slice(0,20)}...</div>
     </div>`).join('');
+  const solscan = tx.solscan_preview ? `<a href="${tx.solscan_preview}" target="_blank" style="font-size:11px;color:var(--accent);font-weight:600;text-decoration:none">View on Solscan ↗</a>` : '';
+  const jupiter = tx.jupiter_route ? `<div style="font-size:11px;color:var(--text2);margin-top:8px">Jupiter route: ${(tx.jupiter_route.route_plan||[]).filter(Boolean).join(' → ') || 'direct'} · Impact: ${tx.jupiter_route.price_impact||'<0.01'}%</div>` : '';
   document.getElementById('txContent').innerHTML = `
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
       <div class="tx-apy">${bestYield.apy||'?'}</div>
       <div>
         <div style="font-size:14px;font-weight:700;color:var(--text)">${bestYield.protocol||'?'} · ${bestYield.asset||'USDC'}</div>
-        <div style="font-size:11px;color:var(--text3)">Confidence: ${bestYield.confidence||'?'} · ${tx.chain||'Base Sepolia'}</div>
+        <div style="font-size:11px;color:var(--text3)">Confidence: ${bestYield.confidence||'high'} · TVL: $${(bestYield.tvl||0).toLocaleString()} · ${tx.chain||'Solana'}</div>
       </div>
-    </div>${steps}
-    <div style="color:var(--orange);font-size:11px;margin-top:10px">${tx.note||'Connect wallet to sign and execute'}</div>`;
+    </div>${steps}${jupiter}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+      <div style="color:var(--orange);font-size:11px">${tx.note||'Connect Phantom or Backpack to sign'}</div>
+      ${solscan}
+    </div>`;
 }
 
 function showBriefing(text) {
@@ -1044,30 +1055,36 @@ function showA2A(messages) {
 
 function showIdentities(identities) {
   if (!identities.length) return;
-  document.getElementById('identityGrid').innerHTML = identities.map(id => `
+  document.getElementById('identityGrid').innerHTML = identities.map(id => {
+    const reg = id.registration || {};
+    const solscan = reg.solscan_url || `https://solscan.io/account/${id.address}?cluster=devnet`;
+    return `
     <div class="identity-card">
       <div class="nft-badge">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        NFT #${id.nft_id||'?'}
+        PDA #${id.nft_id||'?'}
       </div>
-      <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:6px">${(id.address||'').slice(0,26)}...</div>
-      <div style="font-size:11px;color:var(--text2)">Taiko L2 · Chain 167000</div>
-      <div style="margin-top:8px">
-        <span style="padding:2px 9px;border-radius:6px;font-size:10px;font-weight:700;background:${id.registration?.status==='registered'?'rgba(34,197,94,0.12)':'rgba(249,115,22,0.12)'};color:${id.registration?.status==='registered'?'#16a34a':'#ea580c'}">${id.registration?.status||'simulated'}</span>
+      <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:4px">${(id.address||'').slice(0,28)}...</div>
+      <div style="font-size:11px;color:var(--text3);font-family:monospace;margin-bottom:6px">PDA: ${(id.pda||'').slice(0,24)}...</div>
+      <div style="font-size:11px;color:var(--text2)">Solana ${reg.network||'devnet'} · Ed25519</div>
+      <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+        <span style="padding:2px 9px;border-radius:6px;font-size:10px;font-weight:700;background:${reg.status==='registered'?'rgba(34,197,94,0.12)':'rgba(249,115,22,0.12)'};color:${reg.status==='registered'?'#16a34a':'#ea580c'}">${reg.status||'simulated'}</span>
+        <a href="${solscan}" target="_blank" style="font-size:10px;color:var(--accent);text-decoration:none;font-weight:600">Solscan ↗</a>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // Signed actions log with hash reveal
   const sigLog = document.getElementById('sigLog');
   sigLog.innerHTML = identities.map((id,i) => `
     <div class="sig-row" id="sigrow_${i}">
-      <span style="color:var(--accent);font-weight:700">${id.address?.slice(0,14)||'?'}...</span>
-      · ERC-8004 registration ·
+      <span style="color:var(--accent);font-weight:700">${(id.address||'').slice(0,14)}...</span>
+      · Solana PDA registration ·
       <span class="hash-reveal" id="hash_${i}">computing...</span>
       · <span style="color:var(--text3)">${new Date().toLocaleTimeString()}</span>
     </div>`).join('');
   identities.forEach((_,i) => {
-    const fakeHash = '0x' + Array.from({length:40},()=>HEX[Math.floor(Math.random()*16)]).join('');
+    const fakeHash = Array.from({length:44},()=>'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789'[Math.floor(Math.random()*58)]).join('');
     setTimeout(() => revealHash(document.getElementById(`hash_${i}`), fakeHash), i*300);
   });
 }
@@ -1121,7 +1138,7 @@ function clearAll() {
     const el = document.getElementById(id);
     if (el) el.innerHTML = '';
   });
-  document.getElementById('identityGrid').innerHTML = '<div class="empty-state">No identities yet — run Scout to register agents</div>';
+  document.getElementById('identityGrid').innerHTML = '<div class="empty-state">No PDAs yet — run SOLSCOUT to register agents on Solana devnet</div>';
   document.getElementById('a2aList').innerHTML = '<div class="empty-state">No messages yet</div>';
   document.getElementById('paymentGrid').innerHTML = '<div class="empty-state">No payments yet</div>';
   document.getElementById('sigLog').innerHTML = '<div class="empty-state">Signed actions appear here</div>';
@@ -1143,7 +1160,7 @@ function clearAgents() {
   document.getElementById('agentGrid').innerHTML = `
     <div class="empty-state">
       <div class="empty-dots"><span></span><span></span><span></span></div>
-      Agents appear when Scout launches
+      Agents appear when Hunt launches
     </div>`;
 }
 

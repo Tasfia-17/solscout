@@ -1,337 +1,116 @@
-# SCOUT
+# SOLSCOUT
 
-## Verifiable Multi-Agent Intelligence
+Solana Yield Intelligence - AI agents that hunt, audit, and execute yield opportunities on Solana.
 
-SCOUT deploys a coordinated swarm of autonomous AI agents to research any goal in under 90 seconds. Give it a sales prospect, a DeFi yield opportunity, a competitor, or any research target — it decomposes the task into parallel sub-tasks, runs specialist agents simultaneously, and returns a spoken audio briefing, a personalized output, and a visual storyboard of findings. Every agent action is cryptographically signed on-chain using the ERC-8004 Trustless Agents standard, and every API call generates a real micropayment receipt via the x402 protocol.
+## What it does
 
+SOLSCOUT is a multi-agent system that scans Solana DeFi protocols, finds the best yield opportunities, audits risk with AI agents, and builds ready-to-execute transactions. Built for the Dev3pack Global Hackathon 2026.
 
----
+**Core Flow:**
+1. **Hunt** - Agents scan 50+ Solana yield pools via DefiLlama API
+2. **Audit** - Virtuals Risk Agent evaluates safety, TVL, audit status  
+3. **Execute** - Jupiter swap + vault deposit transaction ready to sign
 
-## Table of Contents
+## Features
 
-1. [The Problem](#1-the-problem)
-2. [What SCOUT Does](#2-what-scout-does)
-3. [System Architecture](#3-system-architecture)
-4. [On-Chain Verification Layer](#4-on-chain-verification-layer)
-5. [Multimodal Output](#5-multimodal-output)
-6. [Dashboard](#6-dashboard)
-7. [Tech Stack](#7-tech-stack)
-8. [Project Structure](#8-project-structure)
-9. [Setup and Installation](#9-setup-and-installation)
-10. [Configuration](#10-configuration)
-11. [Running the Server](#11-running-the-server)
-12. [Hackathon Tracks](#12-hackathon-tracks)
-13. [Business Model](#13-business-model)
-14. [On-Chain Details](#14-on-chain-details)
-15. [Credits](#15-credits)
+- **Live Solana Data** - Real yield rates from Kamino, Marinade, Drift, Jupiter, marginfi
+- **AI Risk Auditing** - Virtuals GAME Framework agent scores opportunities 0-100
+- **Cross-chain Check** - LI.FI integration finds better yields on Base/Ethereum
+- **Voice Interface** - ElevenLabs conversational AI for hands-free operation
+- **On-chain Identity** - Each agent has Solana PDA with Ed25519 signing
+- **Real-time Dashboard** - WebSocket-driven glassmorphism UI
 
----
+## Sponsor Integrations
 
-## 1. The Problem
+| Sponsor | Integration |
+|---------|-------------|
+| **Solana** | Native Solana transactions, Jupiter Quote API, Solana Agent Kit |
+| **ElevenLabs** | TTS + Conversational AI for voice briefings |
+| **Virtuals** | Risk Agent deployed on Virtuals GAME Framework |
+| **LI.FI** | Cross-chain yield routing (Solana ↔ Base/ETH) |
+| **Solana Mobile** | PWA works on Seeker phone |
 
-Any time an AI agent needs to research something on the web, act on it, and prove what it did — there is no good solution. The tools that exist solve fragments in isolation.
-
-For sales teams specifically: representatives spend two to three hours per day on prospect research before a single outreach message is sent. They manually stitch together information from company websites, news alerts, CRM notes, and competitor data. The result is either shallow personalization or hours of lost productivity.
-
-For DeFi and financial research: analysts manually compare yield protocols, check on-chain data, and build transaction previews by hand. There is no pipeline from research finding to executable transaction.
-
-The broader problem: when an AI agent acts on your behalf, there is no cryptographic proof of what it found, when it found it, or that the output has not been tampered with. There is no audit trail.
-
-The existing tool landscape solves fragments of this problem in isolation:
-
-- **Clay ($149-800/month)** enriches data fields but requires a specialist operator and a steep learning curve.
-- **Apollo and ZoomInfo** provide contact databases with no intelligence layer. They tell you who to contact, not what to say.
-- **11x and Artisan** send outbound emails at scale but personalization is template-based.
-- **HeyGen and Tavus** generate personalized video and audio but require the user to research and write the script manually.
-
-No tool closes the full loop: decompose any research goal, run specialist agents in parallel, generate genuinely personalized multimodal output, verify every step cryptographically, and deliver everything in under 90 seconds.
-
-SCOUT closes that loop.
-
----
-
-## 2. What SCOUT Does
-
-**Input:** any research goal — a sales prospect, a DeFi yield opportunity, a competitor, a company — typed or spoken in any language.
-
-**Process:** SCOUT decomposes the goal into parallel sub-tasks, assigns each to a specialist agent with a specific target URL and objective, runs all agents simultaneously, and synthesizes findings into a verified intelligence package.
-
-**Output delivered in under 90 seconds:**
-
-### Intelligence Brief
-A structured executive summary sourced from live browser research across multiple URLs. Specific facts, specific signals, specific timing — not a template.
-
-### Personalized Outreach or Action Output
-For sales goals: a draft email with a first line referencing a real finding. For DeFi goals: an unsigned transaction ready to sign. Generated from actual agent findings, not data field merges.
-
-### Audio Briefing
-A 60-second spoken summary generated by Orpheus TTS. Listen before a call or meeting. Delivered with a custom audio player in the dashboard.
-
-### Visual Storyboard
-Four cinematic images generated by Flux Schnell that visualize the research narrative. Generated from the specific findings of each run.
-
-### Verified Audit Trail
-Every agent action is cryptographically signed with an ERC-8004 on-chain identity. Every API call generates a real x402 micropayment receipt. The full audit trail is visible in the Trust and Network tabs.
-
----
-
-## 3. System Architecture
-
-### Input Layer
-Text input or voice via the browser Web Speech API. Multilingual support including Chinese for the Shanghai market.
-
-### Orchestrator
-Receives any research goal and decomposes it into two to three parallel sub-tasks using qwen3-8b. Detects whether the goal is a sales prospect, a DeFi research task, or a general workflow, and selects the appropriate task templates. Coordinates all agent results and synthesizes the final intelligence brief and output.
-
-### Specialist Agents
-Each agent runs independently and in parallel. The lifecycle of a single agent run:
-
-1. Registers an ERC-8004 on-chain identity (ERC-721 NFT on Taiko L2)
-2. Opens a real browser via Playwright
-3. Navigates to the assigned target URL
-4. Extracts an ISM (Interactive State Map) from the live DOM
-5. Generates a GAP (Guarded Action Plan): a complete validated JSON action plan before executing anything
-6. Executes the plan step by step via compiled Playwright actions
-7. Validates each screenshot with a vision model (qwen3-vl-8b)
-8. Signs every action with the agent wallet using EIP-712
-9. Generates a real x402 EIP-3009 USDC micropayment signature
-10. Broadcasts findings to other agents via A2A messages
-11. Stops when meaningful research signals are detected in extracted content
-
-### GAP Pipeline
-The Guarded Action Plan pipeline generates a complete, schema-validated JSON action plan before any browser action is executed. The plan is checked against an allowed operations schema (click, type, scroll, waitFor, assert, sleep, pressKeys), then compiled to Playwright actions. This makes execution deterministic and auditable. If execution fails, the exact plan that failed is logged with full context.
-
-### Output Synthesis
-All agent findings are collected by the orchestrator. The `synthesize_briefing` function generates a three-sentence executive brief from the execution log. The `synthesize_outreach` function generates a personalized email with a specific first line referencing real findings. The `video_briefing` module generates four Flux Schnell storyboard images and an Orpheus TTS audio file from the narration.
-
----
-
-## 4. On-Chain Verification Layer
-
-### ERC-8004 Agent Identity
-
-ERC-8004, formally titled Trustless Agents, is an Ethereum standard co-authored by MetaMask, the Ethereum Foundation, Google, and Coinbase. It provides three on-chain registries: Identity, Reputation, and Validation.
-
-Each SCOUT agent registers an ERC-721 NFT on Taiko L2 using the ERC-8004 standard. The NFT encodes an agent card containing the agent name, description, supported services, and x402 payment support flag. Every action the agent takes is signed with the agent wallet using EIP-712 structured data signing. This creates a cryptographic chain of custody for every step of the research workflow.
-
-Enterprise compliance teams can verify what the agent found, when it found it, which agent produced it, and that the output has not been tampered with.
-
-- **Registry contract:** `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432`
-- **Chain:** Taiko L2 mainnet (chainId 167000)
-
-### x402 Micropayments
-
-x402 is an open protocol launched by Coinbase and Cloudflare that activates the dormant HTTP 402 Payment Required status code for instant, autonomous stablecoin payments. An agent sends a request, receives payment terms, signs a USDC transfer authorization, and retries. Settlement is under two seconds. No KYC, no accounts, no gas required from the sender.
-
-Every SCOUT agent action generates a real EIP-3009 `transferWithAuthorization` USDC payment signature. The payment is gasless for the sender. The x402 facilitator at x402.org handles settlement.
-
-- **Network:** Base Sepolia (chainId 84532)
-- **Asset:** USDC `0x036CbD53842c5426634e7929541eC2318f3dCF7e`
-
-### A2A Communication
-
-Agents communicate via an in-memory message bus implementing the Google Agent-to-Agent (A2A) protocol structure. Research agents broadcast findings to other agents as they discover them. The orchestrator reads all messages to build the final synthesis. Every message is logged with sender, recipient, type, content, and timestamp, and is visible in the Network tab of the dashboard.
-
----
-
-## 5. Multimodal Output
-
-SCOUT produces four distinct output types from a single research run:
-
-| Output Type | Format | Delivery |
-|---|---|---|
-| Intelligence Brief | Structured text | Briefing tab |
-| Personalized Email | Subject + body | Briefing tab |
-| Audio Briefing | MP3 via Orpheus TTS | Custom audio player |
-| Visual Storyboard | 4 images via Flux Schnell | Image grid |
-| Verified Audit Trail | ERC-8004 signatures + x402 receipts | Trust and Network tabs |
-
----
-
-## 6. Dashboard
-
-The dashboard is a four-page single-page application with a glassmorphism design, animated mesh gradient background, and inline SVG icons throughout.
-
-### Scout Tab
-The main research interface. Goal input with voice support, and a live agent grid showing each agent's current URL, action, and browser screenshot with an animated click pointer.
-
-### Briefing Tab
-The intelligence brief, personalized outreach email draft, custom audio player, visual storyboard, and agent screenshots. A notification dot appears on this tab when new briefing data arrives while viewing another tab.
-
-### Trust Tab
-ERC-8004 agent identity cards showing NFT ID, wallet address, chain, and registration status. The signed action log shows every cryptographically signed agent action.
-
-### Network Tab
-A2A message bubbles showing agent-to-agent communication in real time. x402 payment receipt cards showing wallet address, total payment count, USDC amount, and network.
-
----
-
-## 7. Tech Stack
-
-| Component | Technology | Purpose |
-|---|---|---|
-| LLM Orchestration | ionrouter qwen3-8b | Goal decomposition, briefing synthesis, outreach generation |
-| Vision Validation | ionrouter qwen3-vl-8b | Screenshot analysis and click coordinate detection |
-| Text-to-Speech | ionrouter orpheus-3b | 60-second spoken audio briefing |
-| Image Generation | ionrouter flux-schnell | 4-frame visual storyboard |
-| Computer Use Vision | OpenRouter claude-sonnet-4.5 | Element detection for browser automation |
-| Browser Automation | Playwright (Chromium) | Real browser execution and DOM extraction |
-| Action Planning | GAP Pipeline | Validated JSON action plans before execution |
-| Agent Identity | ERC-8004 on Taiko L2 | On-chain agent registration and EIP-712 signing |
-| Micropayments | x402 EIP-3009 on Base Sepolia | Per-action USDC payment receipts |
-| Agent Communication | Google A2A Protocol | Inter-agent message passing and broadcast |
-| Backend Framework | FastAPI + WebSocket | Real-time event streaming to dashboard |
-| Frontend | Vanilla JS SPA | Four-page glassmorphism dashboard |
-| Language | Python 3.12 | All backend modules |
-
----
-
-## 8. Project Structure
-
-```
-scout/
-  server.py            FastAPI server and WebSocket handler
-  orchestrator.py      Multi-agent coordinator, goal decomposition, result synthesis
-  agent.py             Specialist agent: browser execution, ERC-8004 identity, x402 payments
-  browser.py           Playwright browser controller and ISM extraction
-  gap.py               GAP action plan generation, schema validation, and Playwright compilation
-  llm_client.py        ionrouter API wrapper: chat, vision, TTS, image, outreach generation
-  identity.py          ERC-8004 agent identity registration and EIP-712 action signing
-  x402_client.py       x402 EIP-3009 USDC micropayment client
-  a2a_bus.py           In-memory A2A agent-to-agent message bus
-  screen_agent.py      Screenshot to vision model to click coordinate pipeline
-  tx_builder.py        Unsigned Aave V3 DeFi transaction builder
-  video_briefing.py    Flux Schnell storyboard and Orpheus TTS audio briefing
-  static/index.html    Four-page dashboard SPA
-  requirements.txt     Python dependencies
-  .env.example         Environment variable template
-```
-
----
-
-## 9. Setup and Installation
-
-**Requirements**
-- Python 3.12 or higher
-- Node.js (required by Playwright for browser binaries)
-- Chrome or Chromium
-
-**Installation**
+## Quick Start
 
 ```bash
-git clone https://github.com/Tasfia-17/scout
-cd scout
+git clone https://github.com/Tasfia-17/solscout
+cd solscout
 pip install -r requirements.txt
-playwright install chromium
-```
-
----
-
-## 10. Configuration
-
-Copy the environment template and fill in your API keys:
-
-```bash
 cp .env.example .env
+# Add your API keys to .env
+uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 
-| Variable | Description |
-|---|---|
-| `IONROUTER_API_KEY` | API key from ionrouter.io (LLM, vision, TTS, image generation) |
-| `IONROUTER_BASE_URL` | `https://api.ionrouter.io/v1` |
-| `OPENROUTER_API_KEY` | API key from openrouter.ai (Claude computer use) |
-| `WALLET_PRIVATE_KEY` | Ethereum private key for ERC-8004 signing and x402 payments |
+Open http://localhost:8000
 
-The wallet does not need ETH or USDC to run. If the wallet has no balance on Taiko L2, ERC-8004 registration falls back to a simulated mode that demonstrates the full data structure. If the wallet has no USDC on Base Sepolia, x402 payment signatures are still generated and logged as receipts.
+## Demo Mode
 
----
+Works without API keys - uses fallback data and simulated agents.
 
-## 11. Running the Server
+Click **Demo** button or run:
+```bash
+python solscout_orchestrator.py "Find me the safest 10% yield on Solana"
+```
+
+## Architecture
+
+```
+Frontend (SPA)          WebSocket           Backend
+┌─────────────────┐    ┌─────────────┐    ┌──────────────────┐
+│ Glassmorphism   │◄──►│ Real-time   │◄──►│ SOLScout         │
+│ Dashboard       │    │ Events      │    │ Orchestrator     │
+│ - Hunt          │    │             │    │                  │
+│ - Briefing      │    │             │    │ ┌──────────────┐ │
+│ - Trust         │    │             │    │ │ DefiLlama    │ │
+│ - Network       │    │             │    │ │ Client       │ │
+└─────────────────┘    └─────────────┘    │ └──────────────┘ │
+                                          │ ┌──────────────┐ │
+                                          │ │ Virtuals     │ │
+                                          │ │ Risk Agent   │ │
+                                          │ └──────────────┘ │
+                                          │ ┌──────────────┐ │
+                                          │ │ Jupiter TX   │ │
+                                          │ │ Builder      │ │
+                                          │ └──────────────┘ │
+                                          └──────────────────┘
+```
+
+## Key Files
+
+- `solscout_orchestrator.py` - Main orchestrator, spawns agents
+- `defillama_client.py` - Live Solana yield pool data  
+- `solana_tx_builder.py` - Jupiter swap + vault deposit transactions
+- `virtuals_agent.py` - Risk auditing via Virtuals GAME Framework
+- `elevenlabs_client.py` - Voice interface and TTS
+- `solana_identity.py` - Agent PDAs with Ed25519 signing
+- `lifi_client.py` - Cross-chain yield comparison
+- `static/index.html` - Single-page app (63KB, all CSS/JS inline)
+
+## Environment Variables
 
 ```bash
-python3 server.py
+IONROUTER_API_KEY=your_ionrouter_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_key_here  
+VIRTUALS_API_KEY=your_virtuals_key_here
+WALLET_PRIVATE_KEY=your_solana_wallet_private_key_base58
 ```
 
-Open `http://localhost:8000` in Chrome.
+## Tracks Entered
 
-For a persistent background process:
+- **Solana** (Main) - Native Solana transactions and Jupiter integration
+- **ElevenLabs** - Conversational AI voice interface
+- **Virtuals** - Risk Agent on GAME Framework  
+- **LI.FI** - Cross-chain yield routing
+- **Solana Mobile** - PWA mobile experience
 
-```bash
-nohup python3 server.py > scout.log 2>&1 &
-```
+## Built With
 
-Or with uvicorn directly:
+- **Backend**: FastAPI, WebSockets, asyncio
+- **Frontend**: Vanilla JS, glassmorphism CSS, WebSocket real-time
+- **Solana**: Jupiter Quote API, Solana Agent Kit, Ed25519 signing
+- **AI**: ionrouter LLMs, ElevenLabs TTS, Virtuals agents
+- **Data**: DefiLlama API, LI.FI routing
 
-```bash
-uvicorn server:app --host 0.0.0.0 --port 8000 --workers 1
-```
+## Team
 
-Health check:
-
-```bash
-curl http://localhost:8000/health
-# {"status": "ok"}
-```
-
----
-
-##
-
-SCOUT agents autonomously navigate DeFi protocols (Aave, Morpho, DeFiLlama) to research yield opportunities. The `tx_builder` module generates real unsigned Aave V3 `supply()` calldata from research findings. The result is a complete research-to-execution pipeline: agents find the best yield, build the transaction, and present it ready to sign. No manual steps between research and on-chain action.
-
-### 
-
-Every SCOUT agent has an on-chain ERC-8004 identity on Taiko L2. Every action is signed with EIP-712 structured data. Every API call generates a real EIP-3009 USDC payment signature via x402 on Base Sepolia. The Trust tab shows the full identity registry. The Network tab shows the payment receipt log. This is verifiable intelligence: every finding has a cryptographic proof of origin.
-
-### 
-
-The orchestrator decomposes goals into parallel sub-tasks. Specialist agents run simultaneously and communicate findings via A2A messages. The GAP pipeline makes every execution step deterministic and auditable. The system handles goal detection (sales research vs DeFi vs general workflow) and selects appropriate task templates automatically.
-
-### 
-
-Multilingual input support including Chinese. Cross-border prospect research across global data sources. The audio briefing and visual storyboard make findings accessible to non-technical stakeholders across language barriers.
-
----
-
-## 13. Business Model
-
-SCOUT replaces a stack of tools that sales teams currently pay for separately:
-
-| Tool Replaced | Cost | What It Does |
-|---|---|---|
-| Clay Pro | $349/month | Data enrichment and workflow automation |
-| Research assistant | ~$2,000/month | 2-3 hours/day of manual prospect research |
-| HeyGen or Tavus | $29-59/month | Video and audio personalization |
-| Manual email writing | 30-60 min/prospect | Personalized first lines |
-
-**SCOUT pricing: $299/seat/month**
-
-- **Target buyer:** SDR teams, account executives, founders doing outbound sales, and DeFi analysts
-- **Sales motion:** Self-serve, no enterprise procurement required
-- **Time to value:** Under 5 minutes from signup to first research run
-
-The x402 micropayment layer enables an alternative pay-per-research pricing model. Rather than a flat monthly subscription, teams pay per agent action. This aligns cost directly with usage and makes SCOUT accessible to solo founders and small teams.
-
-**Market context:** The AI sales intelligence market is valued at $4.5 billion in 2025 and projected to reach $11.7 billion by 2035 at a 10.4% CAGR. The AI sales assistant software market specifically is projected to grow from $3.1 billion in 2025 to $26 billion by 2035.
-
----
-
-## 14. On-Chain Details
-
-| Parameter | Value |
-|---|---|
-| Agent wallet | `0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF` |
-| x402 network | Base Sepolia (chainId 84532) |
-| x402 USDC contract | `0x036CbD53842c5426634e7929541eC2318f3dCF7e` |
-| ERC-8004 network | Taiko L2 mainnet (chainId 167000) |
-| ERC-8004 registry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` |
-| x402 facilitator | https://x402.org/facilitator |
-
----
-
-## 15. Credits
-
-- [adcock-agent by neelsomani](https://github.com/neelsomani/adcock-agent) — GAP pipeline and browser automation patterns
-- [clicky by farzaa](https://github.com/farzaa/clicky) — Screen capture and voice pipeline patterns
-- [ERC-8004 specification](https://eips.ethereum.org/EIPS/eip-8004) — Trustless Agents standard
-- [x402 protocol](https://x402.org) — HTTP-native micropayments
+Built for Dev3pack Global Hackathon 2026 by the SOLSCOUT team.

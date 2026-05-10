@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from orchestrator import AVAOrchestrator
+from solscout_orchestrator import SOLScoutOrchestrator
 
 app = FastAPI(title="SCOUT — AI Sales Intelligence")
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -75,12 +75,12 @@ async def _run_goal(goal: str):
     def sync_update(msg):
         asyncio.create_task(on_update(msg))
 
-    orch = AVAOrchestrator(headless=True, on_update=sync_update)
+    orch = SOLScoutOrchestrator(on_update=sync_update)
     result = await orch.run(goal)
     last_result = result
 
-    # Send screenshots
-    for i, b64 in enumerate(orch.all_screenshots[:6]):
+    # Send screenshots (if any)
+    for i, b64 in enumerate(getattr(orch, 'all_screenshots', [])[:6]):
         await broadcast({"type": "screenshot", "index": i, "b64": b64})
 
 
@@ -149,39 +149,60 @@ async def demo_mode():
 async def _run_demo():
     import asyncio
     events = [
-        {"type": "status", "msg": "Goal: Marcus Rivera, CTO at Linear (linear.app)"},
-        {"type": "plan", "summary": "Research Linear's product, team, and competitive position", "tasks": [
-            {"id": "t1", "type": "research", "url": "https://linear.app", "objective": "Research Linear's product, pricing, and recent launches"},
-            {"id": "t2", "type": "research", "url": "https://www.google.com", "objective": "Find recent news and funding about Linear"},
-            {"id": "t3", "type": "verify",   "url": "https://www.google.com", "objective": "Research competitors: Jira, Asana, Notion and how Linear positions against them"},
+        {"type": "status", "msg": "Goal: Find me the safest 10% yield on Solana"},
+        {"type": "plan", "summary": "Scan Solana yield pools, audit risk, build deposit transaction", "tasks": [
+            {"id": "t1", "type": "research", "url": "https://defillama.com/yields?chain=Solana", "objective": "Scan Kamino, Marinade, Drift, marginfi for best USDC APY"},
+            {"id": "t2", "type": "verify",   "url": "https://app.kamino.finance",                "objective": "Verify Kamino vault TVL, audit status, and current APY"},
+            {"id": "t3", "type": "execute",  "url": "https://jup.ag",                            "objective": "Build Jupiter swap + Kamino deposit calldata"},
         ]},
-        {"type": "status", "msg": "Launching 3 agents with ERC-8004 identities..."},
-        {"type": "agent_event", "agent_id": "agent_t1", "cycle": 0, "url": "https://linear.app", "action": "Navigating to Linear homepage", "vision": {}, "signature": {"signer": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "verified": True}, "payment": {"nonce": "0xabc123..."}},
-        {"type": "agent_event", "agent_id": "agent_t2", "cycle": 0, "url": "https://www.google.com", "action": "Searching: Linear app funding news 2025", "vision": {}, "signature": {"signer": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "verified": True}, "payment": {"nonce": "0xdef456..."}},
-        {"type": "agent_event", "agent_id": "agent_t3", "cycle": 0, "url": "https://www.google.com", "action": "Searching: Linear vs Jira vs Asana comparison", "vision": {}, "signature": {"signer": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "verified": True}, "payment": {"nonce": "0xghi789..."}},
-        {"type": "agent_event", "agent_id": "agent_t1", "cycle": 1, "url": "https://linear.app", "action": "Extracted: Linear is a project management tool built for speed", "vision": {"success": True}, "signature": {"signer": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "verified": True}, "payment": {"nonce": "0xjkl012..."}},
+        {"type": "status", "msg": "Launching 3 agents with Solana PDAs..."},
+        {"type": "agent_event", "agent_id": "agent_t1", "cycle": 0, "url": "https://defillama.com/yields?chain=Solana",
+         "action": "Scanned 47 Solana pools — best: Kamino 11.2% APY (TVL $45,000,000)",
+         "vision": {}, "signature": {"signer": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "verified": True, "network": "devnet"}, "payment": {"nonce": "sol_1715305557"}},
+        {"type": "agent_event", "agent_id": "agent_t2", "cycle": 0, "url": "https://app.kamino.finance",
+         "action": "Verified Kamino: audited=True, IL risk=no, TVL=$45,000,000",
+         "vision": {}, "signature": {"signer": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM", "verified": True, "network": "devnet"}, "payment": {"nonce": "sol_1715305558"}},
+        {"type": "agent_event", "agent_id": "virtuals_risk_agent", "cycle": 0, "url": "https://virtuals.io",
+         "action": "Risk audit: Cleared. Proceed. — Kamino scores 87/100 risk score",
+         "vision": {}, "signature": {"signer": "Virtuals GAME Framework", "verified": True}, "payment": {}},
+        {"type": "agent_event", "agent_id": "agent_t3", "cycle": 0, "url": "https://jup.ag",
+         "action": "Built Jupiter swap + Kamino JLP vault deposit calldata for USDC",
+         "vision": {}, "signature": {"signer": "BvmmEBZJqLhSMaFNsGFMbKKqFcjZSiMnMHGHGHGHGHGH", "verified": True, "network": "devnet"}, "payment": {"nonce": "sol_1715305560"}},
         {"type": "identities", "identities": [
-            {"address": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "nft_id": 4821, "registration": {"status": "simulated", "chain": "taiko", "chain_id": 167000}},
-            {"address": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "nft_id": 4822, "registration": {"status": "simulated", "chain": "taiko", "chain_id": 167000}},
-            {"address": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "nft_id": 4823, "registration": {"status": "simulated", "chain": "taiko", "chain_id": 167000}},
+            {"address": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "pda": "kamino-scout-pda-4821", "nft_id": 4821, "registration": {"status": "simulated", "network": "devnet", "solscan_url": "https://solscan.io/account/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU?cluster=devnet"}},
+            {"address": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM", "pda": "kamino-risk-pda-4822",  "nft_id": 4822, "registration": {"status": "simulated", "network": "devnet", "solscan_url": "https://solscan.io/account/9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM?cluster=devnet"}},
+            {"address": "BvmmEBZJqLhSMaFNsGFMbKKqFcjZSiMnMHGHGHGHGHGH", "pda": "kamino-exec-pda-4823",  "nft_id": 4823, "registration": {"status": "simulated", "network": "devnet", "solscan_url": "https://solscan.io/account/BvmmEBZJqLhSMaFNsGFMbKKqFcjZSiMnMHGHGHGHGHGH?cluster=devnet"}},
         ]},
         {"type": "a2a_messages", "messages": [
-            {"sender": "agent_t1", "recipient": "broadcast", "type": "finding", "content": {"url": "linear.app", "snippet": "Linear raised $35M Series B. Built for high-performance engineering teams."}, "ts": 0},
-            {"sender": "agent_t2", "recipient": "broadcast", "type": "finding", "content": {"url": "google.com", "snippet": "Linear valued at $400M. Competing directly with Jira for developer-first teams."}, "ts": 0},
-            {"sender": "agent_t3", "recipient": "agent_t1",  "type": "finding", "content": {"url": "google.com", "snippet": "Linear's key differentiator: speed and keyboard-first UX vs Jira's complexity."}, "ts": 0},
+            {"sender": "agent_t1", "recipient": "broadcast",  "type": "finding", "content": {"url": "defillama.com", "snippet": "Kamino JLP vault: 11.2% APY, $45M TVL, audited by OtterSec. Top pick."}, "ts": 0},
+            {"sender": "agent_t2", "recipient": "broadcast",  "type": "finding", "content": {"url": "kamino.finance", "snippet": "Verified: contract audited, no IL risk, TVL stable last 30 days."}, "ts": 0},
+            {"sender": "agent_t3", "recipient": "agent_t1",   "type": "finding", "content": {"url": "jup.ag",         "snippet": "Jupiter route ready: USDC → JLP, 0.05% fee, 2.4s confirmation."}, "ts": 0},
         ]},
         {"type": "payments", "payments": [
-            {"wallet": "0x7FF67D3cF058B79dC68dDf6B586D4D046dbD6eAF", "total_payments": 6, "total_usdc": 0.000006, "network": "Base Sepolia (eip155:84532)"},
+            {"wallet": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU", "total_payments": 3, "total_usdc": 0.000003, "network": "Solana (x402)"},
         ]},
-        {"type": "narration", "text": "Linear is a project management platform built for high-performance engineering teams, having raised $35M in Series B funding at a $400M valuation. Marcus Rivera, as CTO, is likely focused on developer tooling, engineering velocity, and reducing operational overhead. Linear's key competitive advantage over Jira is its speed and keyboard-first UX, which resonates strongly with modern engineering organizations prioritizing developer experience."},
-        {"type": "outreach", "subject": "How we help CTOs like you cut research overhead by 80%", "body": "Hi Marcus,\n\nI noticed Linear recently raised its Series B and is scaling fast — engineering velocity is clearly a priority.\n\nWe built SCOUT to give sales teams the same speed advantage Linear gives engineering teams. A prospect walks in, agents research them in 90 seconds, and your rep walks into the call already knowing what matters.\n\nWorth a 15-minute call this week?\n\nBest,\nScout"},
-        {"type": "score", "score": {"company_growth": 88, "budget_signal": 72, "pain_match": 85, "timing": 78, "tech_fit": 90, "summary": "High-growth Series B company with clear engineering velocity focus — strong fit for productivity tooling."}},
-        {"type": "call_script", "text": "Hi Marcus, I saw Linear just closed its Series B — congrats on the growth.\n\nI'm calling because we built something that gives sales teams the same speed advantage Linear gives engineering teams. Our agents research any prospect in 90 seconds and deliver a spoken briefing before the call.\n\nI know you're probably thinking — another sales tool. But this one actually replaces Clay and a research assistant entirely.\n\nWould 15 minutes this week make sense to show you a live run?"},
-        {"type": "complete", "elapsed_sec": 42},
+        {"type": "transaction", "best_yield": {
+            "protocol": "Kamino", "apy": "11.2%", "asset": "USDC",
+            "tvl": 45_000_000, "il_risk": "no", "audited": True, "confidence": "high"
+        }, "tx": {
+            "status": "ready", "protocol": "Kamino", "action": "Deposit 500 USDC",
+            "apy": "11.2%", "chain": "Solana", "network": "mainnet-beta",
+            "steps": [
+                {"step": 1, "description": "Approve 500 USDC for Kamino vault", "program": "Token Program", "account": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "data": "approve 500000000 lamports"},
+                {"step": 2, "description": "Deposit 500 USDC into Kamino JLP vault (11.2% APY)", "program": "Kamino Finance", "account": "DdFPRnccQqLD4zCHrBqdAJpRmUpatEPZnR9jYGDmEtB2", "data": "deposit 500000000"},
+            ],
+            "note": "Estimated yield: $0.1534/day · Connect Phantom to sign",
+            "solscan_preview": "https://solscan.io/account/DdFPRnccQqLD4zCHrBqdAJpRmUpatEPZnR9jYGDmEtB2",
+        }},
+        {"type": "narration", "text": "SOLSCOUT scanned 47 Solana yield pools and identified Kamino as the top opportunity at 11.2% APY with $45,000,000 TVL. The Virtuals Risk Agent audited the protocol and returned: 'Cleared. Proceed.' — Kamino scores 87/100 on risk. A $500 deposit transaction has been prepared. Authorize to execute on Solana."},
+        {"type": "outreach", "subject": "Yield Strategy — Kamino 11.2%", "body": "Top pick: Kamino at 11.2% APY — TVL $45,000,000\n\nRisk Agent verdict: Cleared. Proceed. (score 87/100)\n\nAlternatives: Marinade-Liquid-Staking 6.87%, Drift-Staked-Sol 6.47%\n\nDeposit $500 USDC → authorize in Phantom or Backpack to execute."},
+        {"type": "call_script", "text": "RISK SUMMARY — Kamino\n\nAPY: 11.2%  |  Risk Score: 87/100  |  TVL: $45,000,000\nAudited: Yes  |  IL Risk: no\n\n✓ Risk Agent cleared this opportunity. Safe to proceed.\n\nNext best: Marinade-Liquid-Staking at 6.87% APY"},
+        {"type": "score", "score": {"company_growth": 56, "budget_signal": 87, "pain_match": 45, "timing": 90, "tech_fit": 90, "summary": "Kamino scores 73/100 — strong yield opportunity with low risk."}},
+        {"type": "complete", "elapsed_sec": 8},
     ]
     for event in events:
         await broadcast(event)
-        await asyncio.sleep(1.2)
+        await asyncio.sleep(1.0)
 
 
 @app.get("/seedance/{task_id}")
