@@ -2,9 +2,9 @@
 
 ## Full Demo (3 minutes)
 
-🎥 **[Watch on YouTube/Loom - Coming Soon]**
+🎥 **[Watch the Demo Video](./demo-video.webm)** (12MB WebM)
 
-*Video will be uploaded here after recording*
+*Recorded demo showing the complete SOLSCOUT workflow*
 
 ---
 
