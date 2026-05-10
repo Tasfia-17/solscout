@@ -2,6 +2,10 @@
 
 Solana Yield Intelligence - AI agents that hunt, audit, and execute yield opportunities on Solana.
 
+## Demo Video
+
+🎥 **[Watch the Demo](https://github.com/Tasfia-17/solscout/blob/main/demo-video.md)**
+
 ## What it does
 
 SOLSCOUT is a multi-agent system that scans Solana DeFi protocols, finds the best yield opportunities, audits risk with AI agents, and builds ready-to-execute transactions. Built for the Dev3pack Global Hackathon 2026.
